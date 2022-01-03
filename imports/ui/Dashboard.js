@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Meteor } from 'meteor/meteor';
 import { Redirect } from 'react-router-dom';
-import { Session } from 'meteor/session';
+import { useTracker } from 'meteor/react-meteor-data';
 
+import { Notes } from '../api/notes';
+import '../api/notesPublication';
+
+import NoteList from './components/NoteList';
+import NoteListHeader from './components/NoteListHeader';
 import PrivateHeader from './components/PrivateHeader';
 
 function Dashboard(props) {
@@ -10,12 +16,19 @@ function Dashboard(props) {
         alert('You have to login to use this function.');
         return <Redirect to="/login" />;
     }
-    Session.set('showVisible', true);
+    const notes = useTracker(() => {
+        const handler = Meteor.subscribe('notes');
+        if (!handler.ready()) {
+            console.log('loading');
+        }
+        return Notes.find().fetch();
+    });
     return (
         <>
             <PrivateHeader />
             <div className="page-content">
-                <p>Dashboard page content</p>
+                <NoteListHeader />
+                <NoteList notes={notes} />
             </div>
         </>
     );

@@ -7,6 +7,7 @@ import {
     Route,
     Redirect,
 } from 'react-router-dom';
+import { Session } from 'meteor/session';
 
 import Home from './Home';
 import Dashboard from './Dashboard';
@@ -20,6 +21,7 @@ export function App() {
         console.log('Auth', isAuthenticated);
         return isAuthenticated;
     });
+    Session.set('noteId', undefined);
 
     return (
         <Router>
